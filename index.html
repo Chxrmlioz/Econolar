@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Econolar – calculadora de consumo de energia</title>
+<meta name="description" content="Calcule o gasto de energia da sua casa a partir dos aparelhos, com dicas e alertas de economia.">
+<meta name="theme-color" content="#2f7a3c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%A1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--d:#1f5f33;--m:#4f9a3a;--l:#8cc63f;--bg:#f6faf1;--c:#e2f0d6;--t:#173a22;--mut:#5b7463;--w:#fff;--r:#c0522f;--y:#b7860b;--sh:rgba(23,58,34,.12);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1c13;--c:#1b3322;--t:#e6f2dc;--mut:#9db9a4;--w:#162a1c;--d:#8cc63f;--sh:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0f1c13;--c:#1b3322;--t:#e6f2dc;--mut:#9db9a4;--w:#162a1c;--d:#8cc63f;--sh:rgba(0,0,0,.4)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--t);font:400 16px/1.45 'Nunito Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;line-height:1.15}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;background:var(--bg)}
+header{background:linear-gradient(135deg,#2f7a3c,#6fae3a);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;border-radius:0 0 22px 22px}
+header h2{font-size:18px;flex:1}
+header button{background:none;border:0;color:#fff;font-size:24px;cursor:pointer;padding:4px 8px}
+.av{width:36px;height:36px;border-radius:50%;background:#ffffff40;display:grid;place-items:center;font-weight:700}
+main{flex:1;padding:18px 16px 28px}
+.btn{display:block;width:100%;border:0;border-radius:12px;background:var(--m);color:#fff;font:700 16px 'Nunito Sans';padding:13px;cursor:pointer;min-height:46px}
+.btn:hover{background:var(--d);color:#fff}.btn.s{background:var(--c);color:var(--t)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--l);outline-offset:2px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 4px}
+input,select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid #9bbf8c;background:var(--w);color:var(--t);font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.menu{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--c);border:0;border-radius:18px;padding:14px;margin-bottom:12px;cursor:pointer;color:var(--t);font:inherit}
+.menu i{width:52px;height:52px;border-radius:50%;background:var(--d);color:#fff;display:grid;place-items:center;font-style:normal;font-size:24px;flex:none}
+:root[data-theme="dark"] .menu i{color:#0f1c13}
+.menu b{display:block;font:800 17px 'Bricolage Grotesque'}.menu span{color:var(--mut);font-size:14px}.menu em{margin-left:auto;font-style:normal;color:var(--m);font-size:22px}
+.card{background:var(--w);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 6px var(--sh)}
+.big{font:800 40px 'Bricolage Grotesque';color:var(--d)}
+.dev{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--c)}
+.dev:last-child{border:0}.dev div{flex:1}.dev small{color:var(--mut)}
+.x{background:none;border:0;color:var(--r);font-size:20px;cursor:pointer;min-width:36px;min-height:36px}
+.bar{height:12px;border-radius:6px;background:var(--c);overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--m),var(--l));border-radius:6px}
+.fm{background:var(--c);border-radius:12px;padding:12px;font-family:'Bricolage Grotesque';font-size:15px;margin:10px 0}
+.al{border-left:6px solid var(--m);background:var(--w);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 6px var(--sh)}
+.al.r{border-color:var(--r)}.al.y{border-color:var(--y)}.al h3{font-size:16px;margin-bottom:4px}
+.note{font-size:13px;color:var(--mut)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.chip{border:0;border-radius:20px;background:var(--c);color:var(--t);padding:8px 14px;font:700 14px 'Nunito Sans';cursor:pointer;white-space:nowrap}.chip.on{background:var(--d);color:#fff}
+:root[data-theme="dark"] .chip.on{color:#0f1c13}
+.logo{text-align:center;margin:10px 0 18px}.logo b{display:block;font:800 36px 'Bricolage Grotesque';color:var(--d)}
+nav{display:flex;position:sticky;bottom:0;background:var(--w);border-top:1px solid var(--c);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;border:0;color:var(--mut);font:600 11px 'Nunito Sans';cursor:pointer;padding:6px 2px;min-height:48px}
+nav button.on{color:var(--d)}nav span{display:block;font-size:20px}
+@media(prefers-reduced-motion:no-preference){main{animation:in .25s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
+.pill{font:700 12px 'Nunito Sans';background:var(--c);padding:3px 10px;border-radius:12px;margin-left:6px;vertical-align:middle}.plan ul{margin:8px 0 12px;padding-left:20px}.plan.cur{outline:2px solid var(--m)}.btn+.btn{margin-top:10px}
+</style></head><body><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=(n,d=1)=>n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let S={user:null,dev:[],tar:0.9,bill:null,hist:[]},view='auth',tipCat='Todas',authMode='login',dbErr=false;
+/* ===== Banco de dados (IndexedDB): tabelas users, ws (dados de cada conta) e events (log) ===== */
+const DB={db:null,
+ open(){return new Promise((ok,no)=>{const r=indexedDB.open('econolar',1);r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore('users',{keyPath:'email'});d.createObjectStore('ws',{keyPath:'email'});d.createObjectStore('events',{keyPath:'id',autoIncrement:true})};r.onsuccess=()=>{DB.db=r.result;ok()};r.onerror=()=>no(r.error)})},
+ tx(st,m,f){return new Promise((ok,no)=>{const t=DB.db.transaction(st,m),q=f(t.objectStore(st));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>no(t.error)})},
+ get:(st,k)=>DB.tx(st,'readonly',o=>o.get(k)),put:(st,v)=>DB.tx(st,'readwrite',o=>o.put(v)),del:(st,k)=>DB.tx(st,'readwrite',o=>o.delete(k)),all:st=>DB.tx(st,'readonly',o=>o.getAll())};
+const hash=async(p,salt)=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+p)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+const save=()=>{if(S.user)DB.put('ws',{email:S.user.email,dev:S.dev,tar:S.tar,bill:S.bill,hist:S.hist,updated:Date.now()}).catch(()=>{})};
+const log=(t,d)=>{if(S.user)DB.put('events',{uid:S.user.email,t,d,ts:Date.now()}).catch(()=>{})};
+/* ===== SaaS: planos ===== */
+const PL={free:{n:'Grátis',price:0,max:5,hist:3,f:['Até 5 aparelhos','Histórico dos últimos 3 meses','Dicas e alertas de consumo']},pro:{n:'Pro',price:9.9,max:1e9,hist:1e9,f:['Aparelhos ilimitados','Histórico mensal completo','Relatório em CSV']}};
+const visHist=()=>S.hist.slice(-PL[S.user.plan].hist);
+const P={'Lâmpada LED':[10,5],'TV':[100,4],'Geladeira':[150,8],'Notebook':[60,4],'Ventilador':[70,6],'Ar-condicionado':[1000,6],'Chuveiro elétrico':[5500,0.5],'Máquina de lavar':[500,1],'Ferro de passar':[1000,0.5],'Micro-ondas':[1200,0.3],'Outro':[0,0]};
+const kwh=d=>d.w*d.h*d.d/1000;
+const total=()=>S.dev.reduce((a,d)=>a+kwh(d),0);
+const go=v=>{view=v;draw();scrollTo(0,0)};
+const TIPS=[
+['Iluminação','Use lâmpadas de LED','Consomem até 80% menos energia que as incandescentes e duram muito mais.'],
+['Eletrônicos','Desligue da tomada o que não está usando','Aparelhos em stand-by continuam consumindo energia.'],
+['Cozinha','Mantenha a geladeira organizada','Evite abrir a porta com frequência, não guarde alimentos quentes e confira a borracha de vedação.'],
+['Lavanderia','Lave roupa com a máquina cheia','Com pouca roupa, o gasto de energia e água é o mesmo. Prefira o modo econômico.'],
+['Climatização','Use o ar-condicionado com moderação','Mantenha entre 23 °C e 25 °C e limpe os filtros regularmente.'],
+['Cozinha','Use forno e fogão com consciência','Evite abrir o forno toda hora e cozinhe com panelas tampadas.'],
+['Banheiro','Reduza o tempo do chuveiro elétrico','Banhos mais curtos e a chave na posição verão economizam bastante, pois é um dos aparelhos mais potentes da casa.'],
+['Casa','Aproveite a luz natural','Abra janelas e cortinas durante o dia para usar menos lâmpadas.']];
+const nav=()=>`<nav>${[['home','🏠','Início'],['calc','🧮','Calcular'],['tips','💡','Dicas'],['res','📊','Consumo'],['alerts','⚠️','Alertas']].map(([v,i,t])=>`<button class="${view==v?'on':''}" onclick="go('${v}')"><span>${i}</span>${t}</button>`).join('')}</nav>`;
+const hdr=(t,back=true)=>`<header>${back?`<button aria-label="Voltar" onclick="go('home')">←</button>`:''}<h2>${t}</h2><div class="av" aria-hidden="true">${esc((S.user?S.user.name:'?')[0]||'?').toUpperCase()}</div></header>`;
+const METER=k=>{const a=Math.min(k/400,1)*240-120;return`<svg viewBox="0 0 200 172" role="img" aria-label="Medidor de energia inteligente marcando ${fmt(k)} kWh" style="width:100%;max-width:230px;display:block;margin:0 auto 6px"><path d="M100 168V150" stroke="#173a22" stroke-width="5"/><rect x="38" y="6" width="124" height="148" rx="16" fill="#e2f0d6" stroke="#173a22" stroke-width="4"/><rect x="52" y="20" width="96" height="40" rx="6" fill="#173a22"/><text x="100" y="44" text-anchor="middle" font-family="monospace" font-size="20" font-weight="700" fill="#8cc63f">${fmt(k)}</text><text x="100" y="55" text-anchor="middle" font-family="monospace" font-size="9" fill="#8cc63f">kWh / mês</text><circle cx="100" cy="104" r="34" fill="#fff" stroke="#173a22" stroke-width="4"/><g stroke="#173a22" stroke-width="2.5">${[-120,-60,0,60,120].map(r=>`<line x1="100" y1="76" x2="100" y2="81" transform="rotate(${r} 100 104)"/>`).join('')}</g><line x1="100" y1="104" x2="100" y2="82" stroke="#c0522f" stroke-width="4" stroke-linecap="round" transform="rotate(${a} 100 104)"/><circle cx="100" cy="104" r="5" fill="#173a22"/><path d="M104 118l-8 10h6l-3 8 9-11h-6z" fill="#e9d44a" stroke="#173a22" stroke-width="1.2"/><circle cx="56" cy="142" r="4" fill="#8cc63f"/><circle cx="68" cy="142" r="4" fill="#e9d44a"/></svg>`};
+const LOGO=`<svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><path d="M48 8 8 42v46h80V42z" fill="#2f7a3c" stroke="#173a22" stroke-width="5" stroke-linejoin="round"/><rect x="26" y="34" width="44" height="14" rx="3" fill="#fff"/><circle cx="48" cy="30" r="9" fill="#e9d44a" stroke="#173a22" stroke-width="3"/><rect x="26" y="54" width="44" height="28" rx="4" fill="#8cc63f" stroke="#173a22" stroke-width="3"/><g fill="#173a22"><rect x="31" y="60" width="8" height="6"/><rect x="43" y="60" width="8" height="6"/><rect x="31" y="70" width="8" height="6"/><rect x="43" y="70" width="8" height="6"/><rect x="57" y="60" width="8" height="16"/></g></svg>`;
+function draw(){
+ let h='';
+ if(view=='auth'){const su=authMode=='signup';h=`<main><div class="logo">${LOGO}<b>econolar</b><span class="note">${su?'Crie sua conta para começar':'Entre na sua conta'}</span></div>
+ ${su?`<label for="n">Nome completo</label><input id="n" autocomplete="name">`:''}
+ <label for="e">E-mail</label><input id="e" type="email" autocomplete="email">
+ <label for="p">Senha</label><input id="p" type="password" autocomplete="${su?'new-password':'current-password'}">
+ <p id="err" class="note" style="color:var(--r)" role="alert">${dbErr?'Banco de dados indisponível neste navegador.':''}</p>
+ <button class="btn" onclick="${su?'signup()':'login()'}">${su?'Criar conta grátis':'Entrar'}</button>
+ <button class="btn s" onclick="authMode='${su?'login':'signup'}';draw()">${su?'Já tenho conta':'Criar uma conta'}</button>
+ <p class="note">Seus dados ficam salvos em um banco de dados (IndexedDB) neste navegador.</p></main>`}
+ if(view=='home'){const t=total();h=hdr('Bem-vindo(a) ao Econolar!',false)+`<main><h1 style="font-size:26px">O que você deseja fazer?</h1><p class="note">Monitore seu consumo de energia de forma simples.</p><div class="card" style="text-align:center;margin-top:14px">${METER(t)}<span class="note">Medidor de energia · estimativa do mês · plano ${PL[S.user.plan].n}</span></div>`+
+ [['calc','🧮','Calcule seu consumo','Cadastre seus aparelhos'],['how','💡','Como calcular?','Entenda o cálculo de energia'],['tips','🍃','Dicas de economia','Economize energia e dinheiro'],['res','📊','Seu consumo','Acompanhe seus resultados'],['alerts','⚠️','Alertas','Avisos sobre consumo elevado'],['plan','⭐','Plano e conta','Assinatura e seus dados']].map(([v,i,t,s])=>`<button class="menu" onclick="go('${v}')"><i>${i}</i><div><b>${t}</b><span>${s}</span></div><em>›</em></button>`).join('')+
+ (S.dev.length?`<div class="card"><span class="note">Estimativa do mês</span><div class="big">${fmt(t)} kWh</div>${brl(t*S.tar)}</div>`:'')+
+ `<button class="btn s" onclick="logout()">Sair</button></main>`}
+ if(view=='how')h=hdr('Como calcular?')+`<main><div class="card"><h3>1. Consumo em kWh</h3><div class="fm">Consumo (kWh) = potência (W) × horas de uso ÷ 1000</div><p>Para o mês, multiplique pelos dias de uso.</p></div>
+ <div class="card"><h3>2. Custo</h3><div class="fm">Custo = consumo (kWh) × tarifa (R$/kWh)</div><p>A tarifa está na sua conta de luz.</p></div>
+ <div class="card"><h3>Exemplo</h3><p>TV de 120 W, 5 h por dia, 30 dias:<br>120 × 5 × 30 ÷ 1000 = <b>18 kWh</b><br>18 × R$ 0,90 = <b>R$ 16,20</b></p></div>
+ <p class="note">Os valores dos aparelhos são estimativas. A conta de luz registra o consumo real da casa.</p></main>`+nav();
+ if(view=='calc'){const t=total();h=hdr('Calcule seu consumo')+`<main><div class="card" style="text-align:center">${METER(t)}<span class="note">Um medidor de energia ou tomada inteligente mostra o consumo real de cada aparelho.</span></div>
+ <div class="card"><h3>1. Adicione seus aparelhos</h3>
+ <label for="a">Aparelho</label><select id="a" onchange="pre()"><option value="">Selecione o aparelho</option>${Object.keys(P).map(k=>`<option>${k}</option>`).join('')}</select>
+ <div id="nm" style="display:none"><label for="nn">Nome do aparelho</label><input id="nn"></div>
+ <div class="row"><div><label for="w">Potência (W)</label><input id="w" type="number" min="1" inputmode="decimal" placeholder="1000"></div><div><label for="hh">Horas/dia</label><input id="hh" type="number" min="0" max="24" step="0.1" inputmode="decimal" placeholder="5"></div><div><label for="dd">Dias/mês</label><input id="dd" type="number" min="1" max="31" value="30"></div></div>
+ <p id="err" class="note" style="color:var(--r)" role="alert"></p><button class="btn" onclick="add()">+ Adicionar</button></div>
+ <div class="card"><h3>2. Resultado</h3>${S.dev.length?S.dev.map((d,i)=>`<div class="dev"><div><b>${esc(d.n)}</b><br><small>${d.w} W · ${d.h} h/dia · ${d.d} dias</small></div><b>${fmt(kwh(d))} kWh</b><button class="x" aria-label="Remover ${esc(d.n)}" onclick="del(${i})">✕</button></div>`).join('')+`<div class="fm">Total: <b>${fmt(t)} kWh/mês</b><br>Custo estimado: <b>${brl(t*S.tar)}</b>/mês</div>`:'<p class="note">Nenhum aparelho ainda. Adicione o primeiro acima.</p>'}
+ <label for="tf">Tarifa da energia (R$/kWh)</label><input id="tf" type="number" step="0.01" min="0" value="${S.tar}" onchange="S.tar=Math.max(0,+this.value)||0.9;save();draw()"></div>
+ <div class="card"><b>Sabia que...</b><br>Aparelhos em stand-by também consomem energia. Desligue da tomada quando não estiver usando.</div></main>`+nav()}
+ if(view=='tips'){const cats=['Todas',...new Set(TIPS.map(t=>t[0]))];const top=topDev();
+ h=hdr('Dicas de economia')+`<main>${top?`<div class="card" style="background:var(--c)"><b>Para você</b><br>${esc(top.n)} é o aparelho que mais pesa no seu consumo estimado (${Math.round(kwh(top)/total()*100)}%). Reduzir algumas horas de uso por dia diminui o gasto.</div>`:''}
+ <div class="chips">${cats.map(c=>`<button class="chip ${c==tipCat?'on':''}" onclick="tipCat='${c}';draw()">${c}</button>`).join('')}</div>
+ ${TIPS.filter(t=>tipCat=='Todas'||t[0]==tipCat).map(t=>`<div class="card"><span class="note">${t[0]}</span><h3>${t[1]}</h3><p style="margin:6px 0 0">${t[2]}</p></div>`).join('')}</main>`+nav()}
+ if(view=='res'){const t=total(),sorted=[...S.dev].sort((a,b)=>kwh(b)-kwh(a));
+ h=hdr('Seu consumo')+`<main><div class="card"><span class="note">Consumo estimado</span><div class="big">${fmt(t)} kWh</div>${brl(t*S.tar)} por mês</div>
+ <div class="card"><h3>Maiores consumidores</h3><br>${sorted.length?sorted.map(d=>{const p=kwh(d)/t*100;return`<div style="display:flex;justify-content:space-between"><span>${esc(d.n)}</span><b>${fmt(p,0)}%</b></div><div class="bar"><i style="width:${p}%"></i></div>`}).join(''):'<p class="note">Cadastre aparelhos na aba Calcular.</p>'}</div>
+ <div class="card"><h3>Compare com sua conta de luz</h3><label for="bl">Consumo na conta (kWh)</label><input id="bl" type="number" min="0" value="${S.bill??''}" onchange="S.bill=this.value===''?null:+this.value;save();draw()">
+ ${S.bill&&t?`<div class="fm">Conta: ${fmt(S.bill)} kWh<br>Econolar: ${fmt(t)} kWh<br>Diferença: ${fmt(Math.abs(S.bill-t))} kWh (${S.bill>t?'a conta é maior':'a estimativa é maior'})</div><p class="note">A diferença existe porque os cálculos dos aparelhos são estimativas e a conta registra o consumo real da casa, incluindo aparelhos não cadastrados.</p>`:''}</div>
+ <div class="card"><h3>Histórico mensal</h3>${S.hist.length?visHist().map(x=>`<div class="dev"><div>${esc(x.m)}</div><b>${fmt(x.k)} kWh</b></div>`).join(''):'<p class="note">Salve o mês para acompanhar a evolução.</p>'}${S.hist.length>visHist().length?'<p class="note">Plano Grátis mostra os últimos 3 meses. Seus dados antigos continuam salvos.</p>':''}<br><button class="btn s" onclick="saveMonth()">Salvar estimativa deste mês</button></div></main>`+nav()}
+ if(view=='alerts'){const A=alerts();h=hdr('Alertas')+`<main><p class="note">Avisos baseados nos aparelhos que você cadastrou. O Econolar estima consumo, mas não mede a rede elétrica da casa.</p><br>${A.length?A.map(a=>`<div class="al ${a[0]}"><h3>${a[1]}</h3><p style="margin:0">${a[2]}</p></div>`).join(''):'<div class="card">Tudo certo por aqui. Cadastre seus aparelhos para receber avisos.</div>'}</main>`+nav()}
+ if(view=='plan'){const p=S.user.plan,L=PL[p];h=hdr('Plano e conta')+`<main><div class="card"><span class="note">${esc(S.user.name)} · ${esc(S.user.email)}</span><div class="big">${L.n}</div><p style="margin:0">${S.dev.length}${L.max<99?' de '+L.max:''} aparelhos cadastrados</p>${S.user.sub?`<p class="note">Assinatura Pro desde ${new Date(S.user.sub.since).toLocaleDateString('pt-BR')}</p>`:''}</div>
+ ${Object.entries(PL).map(([k,x])=>`<div class="card plan ${k==p?'cur':''}"><h3>${x.n}<span class="pill">${x.price?brl(x.price)+'/mês':'R$ 0'}</span></h3><ul>${x.f.map(f=>`<li>${f}</li>`).join('')}</ul>${k==p?'<p class="note" style="margin:0">Plano atual</p>':`<button class="btn" onclick="setPlan('${k}')">${k=='pro'?'Assinar Pro (simulado)':'Voltar ao plano Grátis'}</button>`}</div>`).join('')}
+ <p class="note">Checkout de demonstração: nenhuma cobrança real é feita.</p>
+ <div class="card"><h3>Seus dados</h3><p class="note">Baixe uma cópia ou apague tudo o que está salvo.</p><button class="btn s" onclick="exportData()">Exportar meus dados (JSON)</button><button class="btn s" onclick="exportCSV()">Relatório em CSV (Pro)</button><button class="btn s" style="color:var(--r)" onclick="wipe()">Apagar minha conta e dados</button></div>
+ <button class="btn s" onclick="logout()">Sair</button></main>`+nav()}
+ $('#app').innerHTML=h;
+}
+function topDev(){return S.dev.length?[...S.dev].sort((a,b)=>kwh(b)-kwh(a))[0]:null}
+function alerts(){const A=[],t=total();if(!S.dev.length)return A;
+ const top=topDev();if(S.dev.length>=2&&kwh(top)/t>0.4)A.push(['r','Um aparelho domina seu consumo',`${esc(top.n)} representa ${Math.round(kwh(top)/t*100)}% do consumo estimado. Confira se ele está ligado por mais tempo que o necessário.`]);
+ if(S.hist.length){const l=S.hist[S.hist.length-1].k;if(t>l*1.25)A.push(['r','Consumo estimado em alta',`Seu consumo estimado aumentou ${Math.round((t/l-1)*100)}% em relação ao mês salvo anterior.`]);else if(t<l*0.95)A.push(['','Você está economizando',`Seu consumo estimado caiu ${Math.round((1-t/l)*100)}% em relação ao mês salvo anterior. Continue assim!`])}
+ if(S.bill&&t&&Math.abs(S.bill-t)/S.bill>0.25)A.push(['y','Estimativa distante da conta',`Seus aparelhos somam ${fmt(t)} kWh, mas a conta mostra ${fmt(S.bill)} kWh. Pode haver aparelhos faltando ou horas de uso diferentes.`]);
+ if(S.bill&&t>S.bill*1.0)A.push(['y','Estimativa acima da conta','Revise as horas de uso informadas: a soma dos aparelhos passou do consumo registrado na conta.']);
+ if(S.dev.filter(d=>d.w>=1000).length>=2)A.push(['y','Vários aparelhos de alta potência',`Você cadastrou ${S.dev.filter(d=>d.w>=1000).length} aparelhos de 1000 W ou mais. Juntos pesam na conta; evite usá-los por muitas horas.`]);
+ A.push(['','Dica do dia','Desligue as luzes ao sair de um cômodo. Parece simples, mas ajuda a reduzir o consumo mensal.']);return A}
+async function start(u){S={user:u,dev:[],tar:0.9,bill:null,hist:[]};const w=await DB.get('ws',u.email);if(w)Object.assign(S,{dev:w.dev||[],tar:w.tar||0.9,bill:w.bill??null,hist:w.hist||[]});try{localStorage.setItem('econolar_session',u.email)}catch(e){}go('home')}
+async function signup(){const n=$('#n').value.trim(),e=$('#e').value.trim().toLowerCase(),p=$('#p').value,er=$('#err');
+ if(!n||!/.+@.+\..+/.test(e)||p.length<4){er.textContent='Preencha nome, um e-mail válido e uma senha de pelo menos 4 caracteres.';return}
+ try{if(await DB.get('users',e)){er.textContent='Este e-mail já tem conta. Use "Já tenho conta".';return}
+ const salt=crypto.randomUUID(),u={email:e,name:n,salt,pw:await hash(p,salt),plan:'free',sub:null,created:Date.now()};await DB.put('users',u);
+ let old={};try{old=JSON.parse(localStorage.getItem('econolar'))||{}}catch(x){}
+ if(old.dev&&old.dev.length)await DB.put('ws',{email:e,dev:old.dev,tar:old.tar||0.9,bill:old.bill??null,hist:old.hist||[]});
+ await start(u);log('signup')}catch(x){er.textContent='Não foi possível salvar no banco de dados deste navegador.'}}
+async function login(){const e=$('#e').value.trim().toLowerCase(),p=$('#p').value;let u;try{u=e&&await DB.get('users',e)}catch(x){}
+ if(!u||u.pw!==await hash(p,u.salt)){$('#err').textContent='E-mail ou senha incorretos.';return}await start(u);log('login')}
+function logout(){S={user:null,dev:[],tar:0.9,bill:null,hist:[]};try{localStorage.removeItem('econolar_session')}catch(e){}authMode='login';go('auth')}
+async function setPlan(k){S.user.plan=k;S.user.sub=k=='pro'?{since:Date.now()}:null;await DB.put('users',S.user);log('plan',k);draw()}
+const dl=(name,txt,type)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()};
+async function exportData(){const{pw,salt,...u}=S.user,ev=(await DB.all('events')).filter(x=>x.uid==u.email);dl('econolar-dados.json',JSON.stringify({conta:u,aparelhos:S.dev,tarifa:S.tar,consumoConta:S.bill,historico:S.hist,eventos:ev},null,1),'application/json')}
+function exportCSV(){if(S.user.plan!='pro'){go('plan');return}dl('econolar-relatorio.csv','aparelho;potencia_w;horas_dia;dias_mes;kwh_mes;custo_rs\n'+S.dev.map(d=>[d.n,d.w,d.h,d.d,kwh(d).toFixed(2),(kwh(d)*S.tar).toFixed(2)].join(';')).join('\n'),'text/csv')}
+async function wipe(){if(!confirm('Apagar sua conta e todos os dados salvos? Isso não pode ser desfeito.'))return;const e=S.user.email;for(const v of await DB.all('events'))if(v.uid==e)await DB.del('events',v.id);await DB.del('ws',e);await DB.del('users',e);logout()}
+function pre(){const k=$('#a').value;$('#nm').style.display=k=='Outro'?'block':'none';if(P[k]&&k!='Outro'){$('#w').value=P[k][0];$('#hh').value=P[k][1]}}
+function add(){const k=$('#a').value,n=k=='Outro'?$('#nn').value.trim():k,w=+$('#w').value,h=+$('#hh').value,d=+$('#dd').value;
+ if(!n||!(w>0)||!(h>0)||h>24||!(d>=1&&d<=31)){$('#err').textContent='Escolha o aparelho e informe potência, horas por dia (até 24) e dias por mês.';return}
+ if(S.dev.length>=PL[S.user.plan].max){$('#err').innerHTML='O plano Grátis permite até 5 aparelhos. <a href="#" onclick="go(\'plan\');return false">Conheça o Pro</a>';return}
+ S.dev.push({n,w,h,d});log('device_add',{n,w,h,d});save();draw()}
+function del(i){log('device_del',S.dev[i]);S.dev.splice(i,1);save();draw()}
+function saveMonth(){if(!S.dev.length)return;const m=new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ S.hist=S.hist.filter(x=>x.m!=m);S.hist.push({m,k:total()});log('month_saved',{m,k:total()});save();draw()}
+(async()=>{try{await DB.open();const e=localStorage.getItem('econolar_session'),u=e&&await DB.get('users',e);if(u)return start(u)}catch(x){dbErr=true}draw()})();
+</script></body></html>
